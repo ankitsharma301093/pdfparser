@@ -24,7 +24,9 @@ jobs:
           cache: "pip"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller>=6.0.0
 
       - name: Build EXE with PyInstaller
         run: pyinstaller PDFParser.spec --noconfirm
