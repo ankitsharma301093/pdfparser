@@ -1,6 +1,7 @@
 import os
 import tempfile
 import streamlit as st
+import streamlit.components.v1 as components
 
 from parser_pdf import load_pdf, is_suspicious
 from recovery import recover_text
@@ -18,10 +19,26 @@ st.markdown(
     header {visibility: hidden;}
     [data-testid="stToolbar"] {display: none;}
     .stDeployButton {display: none;}
-    [data-testid="manage-app-button"] {display: none;}
     </style>
     """,
     unsafe_allow_html=True,
+)
+
+# Remove the "Manage app" button injected at runtime by Streamlit Cloud
+components.html(
+    """
+    <script>
+    setInterval(() => {
+        const buttons = window.parent.document.querySelectorAll('button, a');
+        buttons.forEach(el => {
+            if (el.textContent.trim().toLowerCase().includes('manage')) {
+                el.closest('div, section, li')?.remove() || el.remove();
+            }
+        });
+    }, 500);
+    </script>
+    """,
+    height=0,
 )
 
 st.title("PDF Parser & Recovery Tool")
