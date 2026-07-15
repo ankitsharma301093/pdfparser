@@ -1,0 +1,45 @@
+name: Build Windows EXE
+
+on:
+  # Manual trigger from GitHub UI
+  workflow_dispatch:
+
+  # Auto-build on version tags (e.g., v1.0.0)
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build EXE with PyInstaller
+        run: pyinstaller PDFParser.spec --noconfirm
+
+      - name: Upload EXE as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PDFParser-windows
+          path: dist/PDFParser.exe
+          retention-days: 30
+
+      # Create a GitHub Release when triggered by a version tag
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/PDFParser.exe
+          generate_release_notes: true
