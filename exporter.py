@@ -34,15 +34,25 @@ def export_recovered_pdf(source_bytes: bytes, pages: list[PageData], recoveries:
         recovered, _, _ = recoveries[i]
         if is_suspicious(page) and recovered and recovered.strip():
             # Corrupted page — new text page with recovered content
-            new_p = out.new_page(width=page.width, height=page.height)
+            w = page.width or 612
+            h = page.height or 792
+            new_p = out.new_page(width=w, height=h)
             margin = 50
-            rect = fitz.Rect(margin, margin, page.width - margin, page.height - margin)
-            new_p.insert_textbox(rect, recovered.strip(), fontsize=9, color=(0, 0, 0))
+            rect = fitz.Rect(margin, margin, w - margin, h - margin)
+            # Ensure text is compatible with the Base14 Helvetica font
+            clean = recovered.strip().encode("latin-1", errors="replace").decode("latin-1")
+            new_p.insert_textbox(
+                rect,
+                clean,
+                fontsize=9,
+                fontname="helv",
+                color=(0, 0, 0),
+            )
         else:
             # Clean page (or unrecoverable) — copy original verbatim
             out.insert_pdf(src, from_page=i, to_page=i)
 
     src.close()
-    buf = out.tobytes()
+    buf = out.tobytes(garbage=4, deflate=True)
     out.close()
     return buf

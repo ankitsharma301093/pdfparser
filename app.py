@@ -8,6 +8,22 @@ from diagnostics import get_diagnostics
 from exporter import export_all_txt, export_diagnostics_json, export_recovered_pdf
 
 st.set_page_config(page_title="PDF Parser", layout="wide")
+
+# Hide Streamlit's default UI chrome (hamburger menu, footer, deploy button)
+st.markdown(
+    """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    [data-testid="stToolbar"] {display: none;}
+    .stDeployButton {display: none;}
+    [data-testid="manage-app-button"] {display: none;}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 st.title("PDF Parser & Recovery Tool")
 
 uploaded = st.file_uploader("Upload a PDF file", type="pdf")
