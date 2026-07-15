@@ -72,17 +72,18 @@ with st.sidebar:
     recovered, strategy, confidence = recoveries[idx]
 
     st.divider()
-    st.markdown("**Export All Pages**")
+    st.markdown("**Diagnostics**")
 
-    txt_data, diag_data, pdf_data = build_exports(file_bytes)
+    # txt_data, diag_data, pdf_data = build_exports(file_bytes)
+    diag_data = export_diagnostics_json(pages, recoveries)
 
-    st.download_button(
-        "⬇ Recovered Text (.txt)",
-        txt_data,
-        "recovered.txt",
-        "text/plain",
-        use_container_width=True,
-    )
+    # st.download_button(
+    #     "⬇ Recovered Text (.txt)",
+    #     txt_data,
+    #     "recovered.txt",
+    #     "text/plain",
+    #     use_container_width=True,
+    # )
     st.download_button(
         "⬇ Diagnostics (.json)",
         diag_data,
@@ -90,13 +91,13 @@ with st.sidebar:
         "application/json",
         use_container_width=True,
     )
-    st.download_button(
-        "⬇ Recovered PDF",
-        pdf_data,
-        "recovered.pdf",
-        "application/pdf",
-        use_container_width=True,
-    )
+    # st.download_button(
+    #     "⬇ Recovered PDF",
+    #     pdf_data,
+    #     "recovered.pdf",
+    #     "application/pdf",
+    #     use_container_width=True,
+    # )
 
 # --- Main: selected page ---
 st.subheader(f"Page {page.number}")
