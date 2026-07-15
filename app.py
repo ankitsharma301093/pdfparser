@@ -19,6 +19,8 @@ st.markdown(
     header {visibility: hidden;}
     [data-testid="stToolbar"] {display: none;}
     .stDeployButton {display: none;}
+    [data-testid="manage-app-button"] {display: none !important;}
+    ._terminalButton_rix23_138 {display: none !important;}
     </style>
     """,
     unsafe_allow_html=True,
@@ -29,11 +31,11 @@ components.html(
     """
     <script>
     setInterval(() => {
-        const buttons = window.parent.document.querySelectorAll('button, a');
-        buttons.forEach(el => {
-            if (el.textContent.trim().toLowerCase().includes('manage')) {
-                el.closest('div, section, li')?.remove() || el.remove();
-            }
+        const doc = window.parent.document;
+        const btn = doc.querySelector('[data-testid="manage-app-button"]');
+        if (btn) btn.remove();
+        doc.querySelectorAll('button').forEach(el => {
+            if (el.textContent.trim() === 'Manage app') el.remove();
         });
     }, 500);
     </script>
